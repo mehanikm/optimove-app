@@ -1,0 +1,6 @@
+optimove-app/
+.vscode
+.git
+.DS_Store
+infrastructure/
+redis_test.py

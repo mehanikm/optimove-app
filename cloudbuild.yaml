@@ -1,0 +1,49 @@
+steps:
+  - id: "Build"
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/optimove-app/optimove-app:$SHORT_SHA",
+        ".",
+      ]
+
+  - id: "Tag"
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "tag",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/optimove-app/optimove-app:$SHORT_SHA",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/optimove-app/optimove-app:latest",
+      ]
+
+  - id: "Push tag"
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/optimove-app/optimove-app:$SHORT_SHA",
+      ]
+
+  - id: "Push latest"
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/optimove-app/optimove-app:latest",
+      ]
+
+  - id: "Show charts"
+    name: "gcr.io/$PROJECT_ID/helm"
+    args: ["upgrade", "optimove-app", ".", "--install", "--atomic", "--dry-run"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1-c"
+      - "CLOUDSDK_CONTAINER_CLUSTER=cluster-1"
+
+  - id: "Update helm"
+    name: "gcr.io/$PROJECT_ID/helm"
+    args: ["upgrade", "optimove-app", ".", "--install", "--atomic"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1-c"
+      - "CLOUDSDK_CONTAINER_CLUSTER=cluster-1"

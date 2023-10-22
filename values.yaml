@@ -1,0 +1,10 @@
+deployment:
+  webapp:
+    replicaCount: 1
+    image:
+      repository: us-central1-docker.pkg.dev/pro-park-402718/optimove-app/optimove-app
+      tag: latest
+    health_path: /health
+  redis:
+    replicaCount: 1
+    port: 6379

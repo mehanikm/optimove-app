@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-webapp
+  labels:
+    app: {{ .Release.Name }}-webapp
+spec:
+  replicas: {{ .Values.deployment.webapp.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-webapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-webapp
+    spec:
+      containers:
+        - name: webapp
+          image: "{{ .Values.deployment.webapp.image.repository }}:{{ .Values.deployment.webapp.image.tag }}"
+          imagePullPolicy: Always
+          env:
+          - name: REDIS_HOST
+            value: "{{ .Release.Name }}-redis"
+          - name: REDIS_PORT
+            value: "{{ .Values.deployment.redis.port }}"
+          ports:
+            - containerPort: 8080
